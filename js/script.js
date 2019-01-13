@@ -48,46 +48,27 @@ const TodoController = {
     checkedListItems: function(){
 
         console.log("event from model",event);
-
-        let check=html`
+        console.log(event.target.parentNode.parentElement.id)
+        let checked=html`
         <div>
-          ${TodoModel.todoList.map((item) => {
+          ${TodoModel.todoList.map((item,index) => {
             if (item.id==event.target.parentNode.parentElement.id){
-                console.log("everything is good");
+                console.log("index",index);
                 console.log("item.id",item.id);
                 console.log("item.id",item);
                 console.log  ("event.target.parentNode.parentElement.id",event.target.parentNode.parentElement.id)
-               
+              
                 document.getElementById('check').classList.add('green');
                 document.getElementById('text').classList.add('line-through');
-            }
-            
+               
+                
+            }  
           }
         )}
-    
         </div>
       `;
-        render(check, document.getElementById('check'));
-
-    //     TodoModel.todoList.map((item) => {
-       
-    // })
-        
-        // let check = html `
-        // ${TodoModel.todoList.map((item) => html`
-
-        
-        
-        // `;
-        // render(check, document.getElementById());
-
-
-
-        // console.log(item.id);
-        // let check=document.querySelector('#item.id').style.color = "green";
-        // console.log(check)
-    //   let cutText =document.querySelector('.text');
-    //  cutText=cutText.strike();
+     
+        // render(check, document.getElementById(`${event.target.parentNode.parentElement.id}`));
 },
     itemsLeft:{},
     clearCompleted:{}
@@ -130,7 +111,7 @@ const TodoModel = {
                 TodoModel.todoList[index].is_checked=true;
                 TodoController.checkedListItems();
             }
-            })
+        })
     }
     
 }
