@@ -1,7 +1,5 @@
 import css from '../css/styles.css';
-console.log("testing!!!")
 
-// Import lit-html
 import { html, render } from 'lit-html';
 
 
@@ -12,66 +10,139 @@ const TodoController = {
                     event.preventDefault();
                     if (event.keyCode === 13) {
                         TodoModel.addTodo(event.target.value);
-                        TodoController.reDraw();
+                        TodoController.reDrawList();
+                        TodoController.reDrawFooter();
+
                     }
                 });
         },
 
-        clickHandler: {
+        eventHandler: {
             removeEvent(e) {
                 TodoModel.removeTodo(e);
+                TodoController.reDrawList();
+                TodoController.reDrawFooter();
             },
-            checkboxCheckedEvent(e) {
-                TodoModel.checkboxChecked(e)
+            toggleEvent(e) {
+                TodoModel.toggleCheck(e)
+                TodoController.reDrawList();
+                TodoController.reDrawFooter();
             },
+            clearCompletedEvent(e) {
+                TodoModel.clearCompleted(e);
+                TodoController.reDrawList();
+                TodoController.reDrawFooter();
+            },
+            filterCompletedEvent(e) {
+                let filteredArray = TodoModel.filterCompleted(e);
+                TodoController.reDrawList(filteredArray);
+                TodoController.reDrawFooter();
+            },
+            filterActiveEvent(e) {
+                let filteredArray = TodoModel.filterActive(e);
+                TodoController.reDrawList(filteredArray);
+                TodoController.reDrawFooter();
+            },
+            filterAllEvent(e) {
+                let filteredArray = TodoModel.filterAll(e);
+                TodoController.reDrawList(filteredArray);
+                TodoController.reDrawFooter();
+            },
+            editItemEvent(e) {
+                TodoController.editListItem(e);
+            },
+            blurEvent(e) {
+
+            },
+
             capture: true
         },
 
-        reDraw: function() {
+        reDrawHeader: function() {
+
+                let header = html `
+                ${ TodoModel.headerIcon()
+                    ? html`<i class="fas fa-angle-double-down green pr-2"></i>`
+                    : html`<i class="fas fa-angle-double-down pr-2"></i>`
+                }
+                `;
+                // 
+            render(header, document.getElementById('header-icon'));
+        },
+        reDrawList: function(filteredArray = TodoModel.todoList) {
+                TodoModel.itemsCount();
+                TodoController.reDrawHeader();
+    
                 let list = html `
                 <ul class="list-group list-group-flush">
-                    ${TodoModel.todoList.map((item) => html`
+                    ${filteredArray.map((item) => html`
                     <li id="${item.id}" class="list-group-item text-wrap d-flex">
                         <div class="icon color-light-grey mr-1 pr-3">
-                            <i class="fas  fa-check" id="check" @click="${TodoController.clickHandler.checkboxCheckedEvent}"></i>
+                        ${item.is_checked
+                            ? html`<i type="checkbox" class="fas  fa-check green" @click="${TodoController.eventHandler.toggleEvent}"></i>`
+                            : html`<i type="checkbox" class="fas  fa-check  color-light-grey" @click="${TodoController.eventHandler.toggleEvent}"></i>`
+                        }
                         </div>
-                        <div class="text text-wrap pl-4" id="text" >        
+                        ${item.is_checked
+                            ? html`<div class="line-through text text-wrap  pl-4" @dblclick="${TodoController.eventHandler.editItemEvent}" id="text" >        
                             ${item.text} 
-                        </div>
-                        <i class="fas fa-times px-3  pt-2 float-right color-light-grey" id="close" @click="${TodoController.clickHandler.removeEvent}"></i>
+                            </div>`
+                            : html`<div class="text text-wrap  pl-4" @dblclick="${TodoController.eventHandler.editItemEvent}" id="text" >        
+                            ${item.text} 
+                            </div>`
+                        }
+                        
+                        <i class="fas fa-times px-3  pt-2 float-right color-light-grey" id="close" @click="${TodoController.eventHandler.removeEvent}"></i>
                     </li>
                     `)}
                 </ul>
                 `;
+                             
             render(list, document.getElementById('ul'));
     },
-    checkedListItems: function(){
+    
+        reDrawFooter: function (){
+            let   totalTodoLeft=  TodoModel.itemsCount();
+           
+            let footer=  html`
+                <div class="items-left pt-2 " id="items-left">
+                    ${totalTodoLeft} items left
+                </div>   
+                <div class="btn-group " role="group" aria-label="Basic example">
+                    <button type="button" class="btn color-dark-grey tabs background-grey" @click="${TodoController.eventHandler.filterAllEvent}"> All</button>
+                    <button type="button" class="btn color-dark-grey tabs background-grey" @click="${TodoController.eventHandler.filterActiveEvent}">Active</button>
+                    <button type="button" class="btn color-dark-grey tabs background-grey" @click="${TodoController.eventHandler.filterCompletedEvent}">Completed</button>
+                </div>
+                <div class=" clear-completed">
+                    <button type="button" class="btn btn-secondary" @click="${TodoController.eventHandler.clearCompletedEvent}"id='clear-button'>Clear completed(${TodoModel.todoList.length-totalTodoLeft})</button>
+                </div>
+                `;
 
-        console.log("event from model",event);
-        console.log(event.target.parentNode.parentElement.id)
-        let checked=html`
-        <div>
-          ${TodoModel.todoList.map((item,index) => {
-            if (item.id==event.target.parentNode.parentElement.id){
-                console.log("index",index);
-                console.log("item.id",item.id);
-                console.log("item.id",item);
-                console.log  ("event.target.parentNode.parentElement.id",event.target.parentNode.parentElement.id)
-              
-                document.getElementById('check').classList.add('green');
-                document.getElementById('text').classList.add('line-through');
-               
-                
-            }  
-          }
-        )}
-        </div>
-      `;
+            render(footer, document.getElementById('footer'));
+        },
+
+        editListItem: function(event){
+            console.log('event from edit: ', event);
      
-        // render(check, document.getElementById(`${event.target.parentNode.parentElement.id}`));
-},
-    itemsLeft:{},
-    clearCompleted:{}
+            
+      // ${event.target.parentElement.text} 
+            let editedList=html`
+            <div class="icon color-light-grey mr-1 pr-3">
+                ${event.target.parentElement.is_checked
+                    ? html`<i type="checkbox" class="fas  fa-check green" @click="${TodoController.eventHandler.toggleEvent}"></i>`
+                    : html`<i type="checkbox" class="fas  fa-check  color-light-grey" @click="${TodoController.eventHandler.toggleEvent}"></i>`
+                }
+            </div>
+
+            <div class="editText text-wrap  pl-4"  id="text" >  
+            <input type="text" class="text form-control input background-light-grey" id="myInput"  aria-describedby="basic-addon2"> 
+            </div>
+            
+            <i class="fas fa-times px-3  pt-2 float-right color-light-grey" id="close" @click="${TodoController.eventHandler.removeEvent}"></i>
+            `;
+console.log(TodoModel.todoList);
+            render(editedList, document.getElementById(`${event.target.parentElement.id}`));
+        }
 
 
 }
@@ -79,12 +150,10 @@ const TodoController = {
 
 
 const TodoModel = {
+
     todoList: [],
 
     count: 1,
-
-    todosDone:0,
-    todosLeft:0,
 
     addTodo: function(value) {
         var todoItem = {
@@ -93,25 +162,61 @@ const TodoModel = {
             is_checked: false
         }
         TodoModel.todoList.push(todoItem);
-        TodoModel.count++;
+        TodoModel.count++;  
     },
 
     removeTodo: function(event) {
-            TodoModel.todoList.forEach((item, index) => {
-                if (item.id == event.target.parentElement.id) {
-                TodoModel.todoList.splice(index, 1);
-                TodoController.reDraw();
+        TodoModel.todoList.forEach((item, index) => {
+            if (item.id == event.target.parentElement.id) {
+            TodoModel.todoList.splice(index, 1);
             };
         })
     },
 
-    checkboxChecked: function(event){
-        TodoModel.todoList.forEach((item, index) => {
+    toggleCheck: function(event){
+        TodoModel.todoList.forEach((item, index) => {   
             if (item.id == event.target.parentNode.parentElement.id) {
-                TodoModel.todoList[index].is_checked=true;
-                TodoController.checkedListItems();
+                TodoModel.todoList[index].is_checked= !TodoModel.todoList[index].is_checked;
             }
         })
+    },
+    itemsCount: function(){
+
+        let count=0;
+        TodoModel.todoList.map((item, index) => {
+            if(item.is_checked==false){
+                count++;
+            }          
+        })
+        return count;       
+    },
+
+    clearCompleted: function(event){
+        TodoModel.todoList = TodoModel.todoList.filter((item) => {
+            return item.is_checked === false;
+        })
+    },
+    
+    filterActive:function (){
+        TodoModel.todoList = TodoModel.todoList.filter((item) => {
+            return item.is_checked === false;
+        })
+    },
+
+    filterAll: function(all){
+        return TodoModel.todoList;
+    },
+    
+    filterActive: function(active){
+       return  TodoModel.todoList.filter(item => item.is_checked == false);
+    },
+    
+    filterCompleted: function(completed){
+        return TodoModel.todoList.filter(item => item.is_checked === true);
+    },
+    
+    headerIcon: function(){
+     return this.todoList.every(item => item.is_checked==true);
     }
     
 }

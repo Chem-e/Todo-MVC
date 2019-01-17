@@ -34,6 +34,11 @@
     border-right: 3px solid #efd2d3;
 }
 
+.editText {
+    word-wrap: break-word;
+    width: 80%
+}
+
 .text {
     border-left: 3px solid #efd2d3;
     word-wrap: break-word;
