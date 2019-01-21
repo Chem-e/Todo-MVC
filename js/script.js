@@ -8,11 +8,12 @@ const TodoController = {
             document.getElementById("myInput")
                 .addEventListener("keyup", function(event) {
                     event.preventDefault();
+                    // localStorage.clear();
+                    // console.log(localStorage)
                     if (event.keyCode === 13) {
                         TodoModel.addTodo(event.target.value);
                         TodoController.reDrawList();
                         TodoController.reDrawFooter();
-
                     }
                 });
         },
@@ -49,9 +50,18 @@ const TodoController = {
                 TodoController.reDrawFooter();
             },
             editItemEvent(e) {
-                TodoController.editListItem(e);
+                TodoModel.editListItem(e);
+                TodoController.reDrawList();
             },
             blurEvent(e) {
+                TodoModel.blur(e);
+                TodoController.reDrawList();
+
+            },
+            enterKeyEvent(e) {
+
+                TodoModel.enterKeyEdit(e);
+                TodoController.reDrawList();
 
             },
 
@@ -84,15 +94,20 @@ const TodoController = {
                         }
                         </div>
                         ${item.is_checked
-                            ? html`<div class="line-through text text-wrap  pl-4" @dblclick="${TodoController.eventHandler.editItemEvent}" id="text" >        
+                            ? html`<div class="line-through text text-wrap  pl-4"  id="text" >        
                             ${item.text} 
                             </div>`
                             : html`<div class="text text-wrap  pl-4" @dblclick="${TodoController.eventHandler.editItemEvent}" id="text" >        
-                            ${item.text} 
+                            ${item.is_editable
+                                ?
+                                 html` <input type="text" class="text form-control input background-light-grey" @keypress="${TodoController.eventHandler.enterKeyEvent}" @blur="${TodoController.eventHandler.blurEvent}"  aria-describedby="basic-addon2">`
+                                : 
+                                 html`${item.text}`
+                            }
                             </div>`
                         }
                         
-                        <i class="fas fa-times px-3  pt-2 float-right color-light-grey" id="close" @click="${TodoController.eventHandler.removeEvent}"></i>
+                        <i class="fas fa-times px-3  pt-2 float-right color-light-grey" id="close" @click="${TodoController.eventHandler.removeEvent}" ></i>
                     </li>
                     `)}
                 </ul>
@@ -119,39 +134,16 @@ const TodoController = {
                 `;
 
             render(footer, document.getElementById('footer'));
-        },
-
-        editListItem: function(event){
-            console.log('event from edit: ', event);
-     
-            
-      // ${event.target.parentElement.text} 
-            let editedList=html`
-            <div class="icon color-light-grey mr-1 pr-3">
-                ${event.target.parentElement.is_checked
-                    ? html`<i type="checkbox" class="fas  fa-check green" @click="${TodoController.eventHandler.toggleEvent}"></i>`
-                    : html`<i type="checkbox" class="fas  fa-check  color-light-grey" @click="${TodoController.eventHandler.toggleEvent}"></i>`
-                }
-            </div>
-
-            <div class="editText text-wrap  pl-4"  id="text" >  
-            <input type="text" class="text form-control input background-light-grey" id="myInput"  aria-describedby="basic-addon2"> 
-            </div>
-            
-            <i class="fas fa-times px-3  pt-2 float-right color-light-grey" id="close" @click="${TodoController.eventHandler.removeEvent}"></i>
-            `;
-console.log(TodoModel.todoList);
-            render(editedList, document.getElementById(`${event.target.parentElement.id}`));
         }
-
-
 }
 
 
 
 const TodoModel = {
-
-    todoList: [],
+    todoList:[],
+    // todoList :localStorage.getItem('items') ? JSON.parse(localStorage.getItem('items')) : [],
+    
+   
 
     count: 1,
 
@@ -159,9 +151,12 @@ const TodoModel = {
         var todoItem = {
             id: TodoModel.count,
             text: value,
-            is_checked: false
+            is_checked: false,
+            is_editable: false
         }
         TodoModel.todoList.push(todoItem);
+        console.log(this.todoList)
+        // localStorage.setItem('items', JSON.stringify(this.todoList));
         TodoModel.count++;  
     },
 
@@ -169,6 +164,7 @@ const TodoModel = {
         TodoModel.todoList.forEach((item, index) => {
             if (item.id == event.target.parentElement.id) {
             TodoModel.todoList.splice(index, 1);
+            // localStorage.clear();
             };
         })
     },
@@ -180,6 +176,7 @@ const TodoModel = {
             }
         })
     },
+    
     itemsCount: function(){
 
         let count=0;
@@ -194,6 +191,7 @@ const TodoModel = {
     clearCompleted: function(event){
         TodoModel.todoList = TodoModel.todoList.filter((item) => {
             return item.is_checked === false;
+            // localStorage.clear();
         })
     },
     
@@ -217,7 +215,50 @@ const TodoModel = {
     
     headerIcon: function(){
      return this.todoList.every(item => item.is_checked==true);
-    }
+    },
+
+    editListItem: function(event){
+        TodoModel.todoList.forEach((item, index) => {   
+            if (item.id == event.target.parentNode.id) {
+                TodoModel.todoList[index].is_editable= !TodoModel.todoList[index].is_editable;
+            }
+        })     
+    },
     
+    blur: function(){
+        TodoModel.todoList.forEach((item, index) => {   
+            if (item.id == event.target.parentNode.parentElement.id) {
+                item.text=event.target.value;
+                item.is_editable=false;
+            }
+        })   
+    },
+
+    enterKeyEdit:function(event){
+        
+        console.log('event.keyCode: ', event.keyCode);
+        if (event.keyCode === 13) {
+            TodoModel.todoList.forEach((item, index) => {   
+                if (item.id == event.target.parentNode.parentElement.id) {
+                    item.text=event.target.value;
+                    item.is_editable=false;
+                }
+            })    
+        }
+    }
+
+
+
 }
+const TodoLocalStorage={
+    // storage: function(){
+    //     localStorage.setItem('items', JSON.stringify(this.todoList));
+    //     const data = JSON.parse(localStorage.getItem('items'));
+     
+    // },
+
+}
+// TodoLocalStorage.storage();
+// TodoController.reDrawList();
+// TodoController.reDrawFooter();
 TodoController.initialize();

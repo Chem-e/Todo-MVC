@@ -36,7 +36,8 @@
 
 .editText {
     word-wrap: break-word;
-    width: 80%
+    border-left: 3px solid #efd2d3;
+    width: 85%
 }
 
 .text {
@@ -52,7 +53,7 @@
 
 .input {
     border: none;
-    width: 38rem;
+    /* width: 38rem; */
     height: 70px;
 }
 
