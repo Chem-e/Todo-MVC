@@ -78,3 +78,28 @@
     text-decoration: line-through;
     color: #c0c0c0;
 }
+
+input[id^="myInput"]::-webkit-input-placeholder {
+    color: #c0c0c0;
+    font-size: 30px;
+}
+
+input[id^="myInput"]::-moz-placeholder {
+    color: #c0c0c0;
+    font-size: 30px;
+}
+
+input[id^="myInput"]:-ms-input-placeholder {
+    color: #c0c0c0;
+    font-size: 30px;
+}
+
+input[id^="myInput"]:-moz-placeholder {
+    color: #c0c0c0;
+    font-size: 30px;
+}
+
+input:focus {
+    background-color: #f7f7f7;
+    outline: none;
+}
