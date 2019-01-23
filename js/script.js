@@ -1,6 +1,6 @@
-import js from 'model.js';
+// import js from 'model.js';
 
-import js from 'storage.js';
+// import js from 'storage.js';
 
 import css from '../css/styles.css';
 
@@ -9,16 +9,16 @@ import { html, render } from 'lit-html';
 
 const TodoController = {
 
-        initialize: function() {
-            // TodoModel.todoList = localStorage.getItem()
+        init: function() {
 
+            TodoModel.todoList = StorageService.getItems('items')
+            TodoController.reDraw();
             document.getElementById("myInput")
                 .addEventListener("keyup", function(event) {
                     event.preventDefault();
                     if (event.keyCode === 13) {
                         TodoModel.addTodo(event.target.value);
-                        TodoController.reDrawList();
-                        TodoController.reDrawFooter();
+                        TodoController.reDraw();
                     }
                 });
         },
@@ -26,33 +26,27 @@ const TodoController = {
         eventHandler: {
             removeEvent(event) {
                 TodoModel.removeTodo(event);
-                TodoController.reDrawList();
-                TodoController.reDrawFooter();
+                TodoController.reDraw();
             },
             toggleEvent(event) {
                 TodoModel.toggleCheck(event)
-                TodoController.reDrawList();
-                TodoController.reDrawFooter();
+                TodoController.reDraw();
             },
             clearCompletedEvent(event) {
                 TodoModel.clearCompleted(event);
-                TodoController.reDrawList();
-                TodoController.reDrawFooter();
+                TodoController.reDraw();
             },
             filterCompletedEvent(event) {
                 let filteredArray = TodoModel.filterCompleted(event);
-                TodoController.reDrawList(filteredArray);
-                TodoController.reDrawFooter();
+                TodoController.reDraw();
             },
             filterActiveEvent(event) {
                 let filteredArray = TodoModel.filterActive(event);
-                TodoController.reDrawList(filteredArray);
-                TodoController.reDrawFooter();
+                TodoController.reDraw();
             },
             filterAllEvent(event) {
                 let filteredArray = TodoModel.filterAll(event);
-                TodoController.reDrawList(filteredArray);
-                TodoController.reDrawFooter();
+                TodoController.reDraw();
             },
             editItemEvent(event) {
                 TodoModel.editListItem(event);
@@ -73,14 +67,16 @@ const TodoController = {
             capture: true
         },
 
-        reDrawHeader: function() {
 
+
+        reDrawHeader: function() {
                 let header = html `
                 ${ TodoModel.headerIcon()
                     ? html`<i class="fas fa-angle-double-down green pr-2"></i>`
                     : html`<i class="fas fa-angle-double-down pr-2"></i>`
                 }
                 `;
+                
             render(header, document.getElementById('header-icon'));
         },
         
@@ -111,7 +107,6 @@ const TodoController = {
                             }
                             </div>`
                         }
-                        
                         <i class="fas fa-times px-3  pt-2 float-right color-light-grey" id="close" @click="${TodoController.eventHandler.removeEvent}" ></i>
                     </li>
                     `)}
@@ -139,28 +134,37 @@ const TodoController = {
                 `;
 
             render(footer, document.getElementById('footer'));
+        },
+
+        reDraw: function(){
+            this.reDrawList();
+            this.reDrawFooter();
         }
 }
 
 
 
 const TodoModel = {
+   
     todoList:[],
 
-    todoList :localStorage.getItem('items') ? JSON.parse(localStorage.getItem('items')) : [],
-
-    count: 1,
+    guidGenerator: function (id) {
+        var S4 = function() {
+           return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+        };
+        return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+    },
 
     addTodo: function(value) {
         var todoItem = {
-            id: TodoModel.count,
+            id: TodoModel.guidGenerator('id'),
             text: value,
             is_checked: false,
             is_editable: false
         }
         TodoModel.todoList.push(todoItem);
-        console.log(this.todoList)
-        localStorage.setItem('items', JSON.stringify(this.todoList));
+        console.log("from todolist",this.todoList)
+        StorageService.setItems('items');
         TodoModel.count++;  
     },
 
@@ -168,7 +172,7 @@ const TodoModel = {
         TodoModel.todoList.forEach((item, index) => {
             if (item.id == event.target.parentElement.id) {
                 TodoModel.todoList.splice(index, 1);
-                localStorage.setItem('items', JSON.stringify(this.todoList));
+                StorageService.setItems('items');
             };
         })
       
@@ -196,7 +200,7 @@ const TodoModel = {
         TodoModel.todoList = TodoModel.todoList.filter((item) => {
             return   item.is_checked === false;
         })
-            localStorage.setItem('items', JSON.stringify(this.todoList));
+        StorageService.setItems('items');
     },
     
 
@@ -212,14 +216,14 @@ const TodoModel = {
         return TodoModel.todoList.filter(item => item.is_checked === true);
     },
     
-    // headerIcon: function(){
-    //     if(this.todoList.length===0){
-    //         return false;
-    //     }
-    //     else{
-    //         return this.todoList.every(item => item.is_checked==true);
-    //     }
-    // },
+    headerIcon: function(){
+        if(this.todoList.length===0){
+            return false;
+        }
+        else{
+            return this.todoList.every(item => item.is_checked==true);
+        }
+    },
 
     editListItem: function(event){
         TodoModel.todoList.forEach((item, index) => {   
@@ -237,31 +241,22 @@ const TodoModel = {
             }
         })   
     }
+
 }
 
 
+const StorageService = {
 
-const TodoLocalStorage={
-
-    serviceSetItem: function(){
-    
+    setItems: function(items){
+        return localStorage.setItem('items', JSON.stringify(TodoModel.todoList));
     },
 
-    serviceGetItem: function(){
-
+    getItems: function(items){
+        const data = JSON.parse(localStorage.getItem('items'));
+        return data;
     }
-    // localStorage.setItem('items', JSON.stringify(TodoModel.todoList));
-    // const data = JSON.parse(localStorage.getItem('items')); 
-    // data.forEach(item => {
-    //     TodoController.reDrawList();
-    // });
-
-    
 
 }
 
-localStorage.clear();
-TodoController.initialize();
-TodoLocalStorage.storage();
-TodoController.reDrawList();
-TodoController.reDrawFooter();
+
+TodoController.init();
