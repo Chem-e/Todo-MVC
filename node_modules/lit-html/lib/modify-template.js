@@ -11,8 +11,11 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
+/**
+ * @module shady-render
+ */
 import { isTemplatePartActive } from './template.js';
-const walkerNodeFilter = NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_COMMENT | NodeFilter.SHOW_TEXT;
+const walkerNodeFilter = 133 /* NodeFilter.SHOW_{ELEMENT|COMMENT|TEXT} */;
 /**
  * Removes the list of nodes from a Template safely. In addition to removing
  * nodes from the Template, the Template part indices are updated to match
@@ -69,7 +72,7 @@ export function removeNodesFromTemplate(template, nodesToRemove) {
     nodesToRemoveInTemplate.forEach((n) => n.parentNode.removeChild(n));
 }
 const countNodes = (node) => {
-    let count = (node.nodeType === Node.DOCUMENT_FRAGMENT_NODE) ? 0 : 1;
+    let count = (node.nodeType === 11 /* Node.DOCUMENT_FRAGMENT_NODE */) ? 0 : 1;
     const walker = document.createTreeWalker(node, walkerNodeFilter, null, false);
     while (walker.nextNode()) {
         count++;

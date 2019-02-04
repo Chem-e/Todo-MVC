@@ -11,6 +11,9 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
+/**
+ * @module lit-html
+ */
 import { isCEPolyfill } from './dom.js';
 import { isTemplatePartActive } from './template.js';
 /**
@@ -71,7 +74,7 @@ export class TemplateInstance {
                 else if (nodeIndex === part.index) {
                     if (part.type === 'node') {
                         const part = this.processor.handleTextExpression(this.options);
-                        part.insertAfterNode(node);
+                        part.insertAfterNode(node.previousSibling);
                         this._parts.push(part);
                     }
                     else {

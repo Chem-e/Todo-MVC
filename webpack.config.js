@@ -1,51 +1,51 @@
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-
-var webpack = require('webpack')
-var HtmlWebpackPlugin = require('html-webpack-plugin')
-
+const HtmlWebPackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-    entry: './js/script.js',
-    output: {
-        filename: './dist/bundle.js'
-    },
-    watch: true,
     module: {
+
         rules: [{
-                test: /\.css$/,
-                use: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: "css-loader"
-                })
-            }, {
                 test: /\.js$/,
-                exclude: /(node_modules|bower_components)/,
+                exclude: /node_modules/,
                 use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['env']
-                    }
+                    loader: "babel-loader",
                 }
-            }, {
-                "test": /\.html$/,
-                use: {
-                    "loader": "raw-loader"
-                }
+            },
+            {
+                enforce: "pre",
+                test: /\.js$/,
+                exclude: /node_modules/,
+                loader: "eslint-loader",
+            },
+            {
+                test: /\.html$/,
+                use: [{
+                    loader: "html-loader",
+                    options: { minimize: true }
+                }]
+            },
+            {
+                test: /\.css$/,
+                use: [MiniCssExtractPlugin.loader, "css-loader"]
             },
             {
                 "test": /\.(eot|svg)$/,
-                "loader": "file-loader?name=[name].[hash:20].[ext]"
+                "loader": "file-loader?name=[name].[ext]"
             },
             {
                 "test": /\.(jpg|png|gif|otf|ttf|woff|woff2|cur|ani)$/,
-                "loader": "url-loader?name=[name].[hash:20].[ext]&limit=10000"
-            },
+                "loader": "url-loader?name=[name].[ext]&limit=10000"
+            }
         ]
     },
     plugins: [
-        new ExtractTextPlugin("./css/styles.css"),
-        new HtmlWebpackPlugin({
-            template: './index.html'
+        new HtmlWebPackPlugin({
+            template: "./src/index.html",
+            filename: "./index.html"
+        }),
+        new MiniCssExtractPlugin({
+            filename: "[name].css",
+            chunkFilename: "[id].css"
         })
     ]
-}
+};

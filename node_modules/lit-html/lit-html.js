@@ -11,13 +11,30 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
+/**
+ *
+ * Main lit-html module.
+ *
+ * Main exports:
+ *
+ * -  [[html]]
+ * -  [[svg]]
+ * -  [[render]]
+ *
+ * @module lit-html
+ * @preferred
+ */
+/**
+ * Do not remove this comment; it keeps typedoc from misplacing the module
+ * docs.
+ */
 import { defaultTemplateProcessor } from './lib/default-template-processor.js';
 import { SVGTemplateResult, TemplateResult } from './lib/template-result.js';
 export { DefaultTemplateProcessor, defaultTemplateProcessor } from './lib/default-template-processor.js';
 export { directive, isDirective } from './lib/directive.js';
 // TODO(justinfagnani): remove line when we get NodePart moving methods
 export { removeNodes, reparentNodes } from './lib/dom.js';
-export { noChange } from './lib/part.js';
+export { noChange, nothing } from './lib/part.js';
 export { AttributeCommitter, AttributePart, BooleanAttributePart, EventPart, isPrimitive, NodePart, PropertyCommitter, PropertyPart } from './lib/parts.js';
 export { parts, render } from './lib/render.js';
 export { templateCaches, templateFactory } from './lib/template-factory.js';

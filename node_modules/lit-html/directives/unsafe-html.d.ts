@@ -12,5 +12,12 @@
  * http://polymer.github.io/PATENTS.txt
  */
 import { Part } from '../lit-html.js';
+/**
+ * Renders the result as HTML, rather than text.
+ *
+ * Note, this is unsafe to use with any user-provided input that hasn't been
+ * sanitized or escaped, as it may lead to cross-site-scripting
+ * vulnerabilities.
+ */
 export declare const unsafeHTML: (value: any) => (part: Part) => void;
 //# sourceMappingURL=unsafe-html.d.ts.map

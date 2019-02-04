@@ -11,6 +11,12 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
+/**
+ * @module lit-html
+ */
+/**
+ * True if the custom elements polyfill is in use.
+ */
 export declare const isCEPolyfill: boolean;
 /**
  * Reparents nodes, starting from `startNode` (inclusive) to `endNode`
