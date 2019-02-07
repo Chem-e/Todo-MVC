@@ -1,119 +1,135 @@
 import { StorageService } from './storage';
 
-export const TodoModel = {
+class Todo {
 
-    todoList: [],
+    constructor(value, id) {
+        this.id = id;
+        this.text = value;
+        this.is_checked = false;
+        this.is_editable = false;
+    }
 
-    init: function() {
-        if (StorageService.setItems() !== null) {
-            return TodoModel.todoList;
+};
+
+export class TodoModel {
+
+
+    constructor() {
+        this.storageService = new StorageService();
+        this.todoList = [];
+        if (this.storageService.getItems() !== null || this.storageService.getItems() !== undefined) {
+            this.todoList;
+            console.log('1');
+            // this.storageService.setItems(this.todoList);
         } else {
-            return TodoModel.todoList = [];
+            console.log('2');
+            this.todoList = [];
+            // this.storageService.setItems(this.todoList = []);
         }
-    },
+        this.todoList = this.storageService.getItems();
+    }
 
-    guidGenerator: function(id) {
+    guidGenerator(id) {
         return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-    },
+    }
 
-    addTodo: function(value) {
-        let todoItem = {
-            id: TodoModel.guidGenerator('id'),
-            text: value,
-            is_checked: false,
-            is_editable: false
-        };
-        TodoModel.todoList.push(todoItem);
-        StorageService.setItems('items');
-        TodoModel.count++;
-    },
+    addTodo(value) {
+        let id = this.guidGenerator();
+        this.todoList.push(new Todo(value, id));
+        this.storageService.setItems(this.todoList);
+    }
 
-    removeTodo: function(event) {
-        TodoModel.todoList.forEach((item, index) => {
+    removeTodo(event) {
+        this.todoList.forEach((item, index) => {
             if (item.id == event.target.parentElement.id) {
-                TodoModel.todoList.splice(index, 1);
-                StorageService.setItems('items');
+                this.todoList.splice(index, 1);
+                this.storageService.setItems(this.todoList);
             };
         });
+    }
 
-    },
-
-    toggleCheck: function(event) {
-        TodoModel.todoList.forEach((item, index) => {
+    toggleCheck(event) {
+        this.todoList.forEach((item, index) => {
             if (item.id == event.target.parentNode.parentElement.id) {
-                TodoModel.todoList[index].is_checked = !TodoModel.todoList[index].is_checked;
+                this.todoList[index].is_checked = !this.todoList[index].is_checked;
             }
         });
-        StorageService.setItems('items');
-    },
+        this.storageService.setItems(this.todoList);
+    }
 
-    itemsCount: function() {
+    itemsCount() {
         let count = 0;
-        TodoModel.todoList.map((item, index) => {
+        this.todoList.map((item, index) => {
             if (item.is_checked == false) {
                 count++;
             }
         });
         return count;
-    },
+    }
 
-    clearCompleted: function(event) {
-        TodoModel.todoList = TodoModel.todoList.filter((item) => {
+    clearCompleted(event) {
+        this.todoList = this.todoList.filter((item) => {
             return item.is_checked === false;
         });
-        StorageService.setItems('items');
-    },
+        this.storageService.setItems(this.todoList);
+    }
 
-    filter: function(event) {
+    filter(event) {
         let x = event.target.id;
         switch (x) {
             case 'all':
-                return TodoModel.todoList;
+                return this.todoList;
                 break;
             case 'active':
-                return TodoModel.todoList.filter(item => item.is_checked == false);
+                return this.todoList.filter(item => item.is_checked == false);
                 break;
             case 'completed':
-                return TodoModel.todoList.filter(item => item.is_checked === true);
+                return this.todoList.filter(item => item.is_checked === true);
                 break;
         }
-    },
+        this.storageService.setItems(this.todoList);
+    }
 
-    headerIcon: function() {
+    headerIcon() {
         if (this.todoList.length === 0) {
             return false;
         } else {
             return this.todoList.every(item => item.is_checked == true);
         }
-    },
+        this.storageService.setItems(this.todoList);
+    }
 
-    editListItem: function(event) {
-        TodoModel.todoList.forEach((item, index) => {
+    editListItem(event) {
+        this.todoList.forEach((item, index) => {
             if (item.id == event.target.parentNode.id) {
-                TodoModel.todoList[index].is_editable = !TodoModel.todoList[index].is_editable;
+                this.todoList[index].is_editable = !this.todoList[index].is_editable;
             }
         });
-    },
+        this.storageService.setItems(this.todoList);
+    }
 
-    edit: function() {
-        TodoModel.todoList.forEach((item, index) => {
+    edit() {
+        this.todoList.forEach((item, index) => {
             if (item.id == event.target.parentNode.parentElement.id) {
                 item.text = event.target.value;
                 item.is_editable = false;
             }
         });
-    },
+        this.storageService.setItems(this.todoList);
+    }
 
-    checkAll: function() {
-        TodoModel.todoList.forEach((item, index) => {
+    checkAll() {
+        this.todoList.forEach((item, index) => {
             item.is_checked = true;
         });
-    },
+        this.storageService.setItems(this.todoList);
+    }
 
-    uncheckAll: function() {
-        TodoModel.todoList.forEach((item, index) => {
+    uncheckAll() {
+        this.todoList.forEach((item, index) => {
             item.is_checked = false;
         });
+        this.storageService.setItems(this.todoList);
     }
 
 };
