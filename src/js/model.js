@@ -1,6 +1,6 @@
 import { StorageService } from './storage';
 
-class Todo {
+class TodoObject {
 
     constructor(value, id) {
         this.id = id;
@@ -12,7 +12,6 @@ class Todo {
 };
 
 export class TodoModel {
-
 
     constructor() {
         this.storageService = new StorageService();
@@ -29,7 +28,7 @@ export class TodoModel {
 
     addTodo(value) {
         let id = this.guidGenerator();
-        this.todoList.push(new Todo(value, id));
+        this.todoList.push(new TodoObject(value, id));
         this.storageService.setItems(this.todoList);
     }
 
@@ -69,8 +68,8 @@ export class TodoModel {
     }
 
     filter(event) {
-        let x = event.target.id;
-        switch (x) {
+        let id = event.target.id;
+        switch (id) {
             case 'all':
                 return this.todoList;
                 break;
@@ -94,7 +93,6 @@ export class TodoModel {
             this.storageService.setItems(this.todoList);
             return done;
         }
-
     }
 
     editListItem(event) {
