@@ -17,8 +17,8 @@ export class TodoModel {
     constructor() {
         this.storageService = new StorageService();
         this.todoList = [];
-        
-        if(this.storageService.getItems()) {
+
+        if (this.storageService.getItems()) {
             this.todoList = this.storageService.getItems();
         }
     }
@@ -86,11 +86,15 @@ export class TodoModel {
 
     headerIcon() {
         if (this.todoList.length === 0) {
-            return false;
+            let none = false;
+            this.storageService.setItems(this.todoList);
+            return none;
         } else {
-            return this.todoList.every(item => item.is_checked == true);
+            let done = this.todoList.every(item => item.is_checked == true);
+            this.storageService.setItems(this.todoList);
+            return done;
         }
-        this.storageService.setItems(this.todoList);
+
     }
 
     editListItem(event) {

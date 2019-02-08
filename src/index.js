@@ -4,8 +4,6 @@ import { html, render } from 'lit-html';
 
 import { TodoModel } from './js/model';
 
-// import { StorageService } from './js/storage';
-
 class TodoController {
 
     constructor() {
@@ -13,7 +11,7 @@ class TodoController {
         console.log(this.todoModel);
         this.reDraw();
         document.getElementById("myInput")
-            .addEventListener("keyup", (event)  => {
+            .addEventListener("keyup", (event) => {
                 event.preventDefault();
                 if (event.keyCode === 13) {
                     this.todoModel.addTodo(event.target.value);
@@ -25,6 +23,7 @@ class TodoController {
     }
 
     removeEvent(event) {
+        console.log(this.todoModel);
         this.todoModel.removeTodo(event);
         this.reDraw();
     }
@@ -74,7 +73,7 @@ class TodoController {
     }
 
     reDrawHeader() {
-        let header = html `
+            let header = html `
             ${ this.todoModel.headerIcon()
                 ? html`<i type="checkbox" class="fas  fa-check green" @click="${this.uncheckAllEvent}"></i>`
                 : html`<i class="fas fa-angle-double-down pr-2" @click="${this.checkAllEvent}"></i>`
