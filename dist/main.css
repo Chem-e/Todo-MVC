@@ -65,6 +65,11 @@
     height: 70px;
 }
 
+.editableInput {
+    height: 50px;
+    background-color: white;
+}
+
 #close:hover {
     color: red;
 }
@@ -112,6 +117,5 @@ input[id="myInput"]:-moz-placeholder {
 }
 
 input:focus {
-    background-color: #f7f7f7;
     outline: none;
 }

@@ -17,16 +17,10 @@ export class TodoModel {
     constructor() {
         this.storageService = new StorageService();
         this.todoList = [];
-        if (this.storageService.getItems() !== null || this.storageService.getItems() !== undefined) {
-            this.todoList;
-            console.log('1');
-            // this.storageService.setItems(this.todoList);
-        } else {
-            console.log('2');
-            this.todoList = [];
-            // this.storageService.setItems(this.todoList = []);
+        
+        if(this.storageService.getItems()) {
+            this.todoList = this.storageService.getItems();
         }
-        this.todoList = this.storageService.getItems();
     }
 
     guidGenerator(id) {

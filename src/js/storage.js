@@ -3,8 +3,7 @@ export class StorageService {
     constructor() {}
 
     setItems(items) {
-        var set = localStorage.setItem('items', JSON.stringify(items));
-        return set;
+        localStorage.setItem('items', JSON.stringify(items));
     };
 
     getItems() {
