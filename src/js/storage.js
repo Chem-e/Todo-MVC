@@ -1,15 +1,14 @@
-import { TodoModel } from './model';
+export class StorageService {
 
-export const StorageService = {
+    constructor() {}
 
-    setItems: function(items) {
-        var set = localStorage.setItem('items', JSON.stringify(TodoModel.todoList));
-        return set;
-    },
+    setItems(items) {
+        localStorage.setItem('items', JSON.stringify(items));
+    };
 
-    getItems: function(items) {
+    getItems() {
         const data = JSON.parse(localStorage.getItem('items'));
         return data;
-    }
+    };
 
 };
