@@ -1,4 +1,5 @@
 import { StorageService } from './storage';
+import { Db } from './firebaseService';
 
 class TodoObject {
 
@@ -9,17 +10,38 @@ class TodoObject {
         this.is_editable = false;
     }
 
+    todo() {
+        return {
+            id: this.id,
+            text: this.text,
+            is_checked: this.is_checked,
+            is_editable: this.is_editable
+        };
+    }
+
 };
 
 export class TodoModel {
 
     constructor() {
         this.storageService = new StorageService();
+        this.db = new Db();
         this.todoList = [];
 
         if (this.storageService.getItems()) {
             this.todoList = this.storageService.getItems();
         }
+
+        // this.db.setItems();
+    }
+
+    dataBaseData() {
+        return this.db.getItems().then((items) => {
+            if (items) {
+                this.todoList = items;
+            }
+            return this.todoList;
+        });
     }
 
     guidGenerator(id) {
@@ -28,8 +50,10 @@ export class TodoModel {
 
     addTodo(value) {
         let id = this.guidGenerator();
-        this.todoList.push(new TodoObject(value, id));
+        let todoObject = new TodoObject(value, id);
+        this.todoList.push(todoObject);
         this.storageService.setItems(this.todoList);
+        this.db.addItems(todoObject.todo());
     }
 
     removeTodo(event) {
