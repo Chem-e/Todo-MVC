@@ -23,22 +23,94 @@ export class Db {
     }
 
     addItems(item) {
-            return this.firestore.collection('todos').add(item);
-        }
-        // setItems(item) {
-        //     var alfa = this.firestore.collection('todos').this.getItems().then().set(item);
-        //     console.log('alfa: ', alfa);
-        // }
+        return this.firestore.collection('todos').add(item);
+    }
+
     getItems() {
         return this.firestore.collection('todos').get().then((snapshot) => {
             let output = [];
             snapshot.docs.forEach(doc => {
-                // console.log(doc.data());
-                // console.log(doc.id);
                 output.push(doc.data());
-                // console.log('output: ', output);
             });
             return output;
+        });
+    }
+
+    deleteItem(event) {
+        return this.firestore.collection('todos').get().then((snapshot) => {
+            snapshot.docs.forEach(doc => {
+                if (doc.data().id == event.target.parentElement.id) {
+                    this.firestore.collection('todos').doc(doc.id).delete();
+                }
+            });
+        });
+    }
+
+    toggleItem(itemId, is_checkedStatus) {
+        return this.firestore.collection('todos').get().then((snapshot) => {
+            snapshot.docs.forEach(doc => {
+                if (doc.data().id == itemId) {
+                    this.firestore.collection('todos').doc(doc.id).update({
+                        is_checked: is_checkedStatus
+                    });
+                }
+            });
+        });
+    }
+
+    editListItem(itemId, is_editableStatus) {
+        return this.firestore.collection('todos').get().then((snapshot) => {
+            snapshot.docs.forEach(doc => {
+                if (doc.data().id == itemId) {
+                    this.firestore.collection('todos').doc(doc.id).update({
+                        is_editable: is_editableStatus
+                    });
+                }
+            });
+        });
+    }
+
+    editedListItem(itemId, updatedText) {
+        return this.firestore.collection('todos').get().then((snapshot) => {
+            snapshot.docs.forEach(doc => {
+                if (doc.data().id == itemId) {
+                    this.firestore.collection('todos').doc(doc.id).update({
+                        text: updatedText,
+                        is_editable: false
+                    });
+                }
+            });
+        });
+    }
+
+    checkAllItems(is_checkedStatus) {
+        return this.firestore.collection('todos').get().then((snapshot) => {
+            snapshot.docs.forEach(doc => {
+                this.firestore.collection('todos').doc(doc.id).update({
+                    is_checked: is_checkedStatus
+                });
+            });
+        });
+    }
+
+    uncheckAllItems(is_checkedStatus) {
+        return this.firestore.collection('todos').get().then((snapshot) => {
+            snapshot.docs.forEach(doc => {
+                this.firestore.collection('todos').doc(doc.id).update({
+                    is_checked: is_checkedStatus
+                });
+            });
+        });
+    }
+
+    clearCompletedItems(event, completedItems) {
+        return this.firestore.collection('todos').get().then((snapshot) => {
+            snapshot.docs.forEach(doc => {
+                console.log('here', doc.data().is_checked);
+                if (doc.data().is_checked == true) {
+                    this.firestore.collection('todos').doc(doc.id).delete();
+                }
+            });
         });
     }
 

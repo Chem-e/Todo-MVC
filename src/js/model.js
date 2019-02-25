@@ -27,12 +27,11 @@ export class TodoModel {
         this.storageService = new StorageService();
         this.db = new Db();
         this.todoList = [];
+        this.todoObject = new TodoObject();
 
         if (this.storageService.getItems()) {
             this.todoList = this.storageService.getItems();
         }
-
-        // this.db.setItems();
     }
 
     dataBaseData() {
@@ -61,14 +60,17 @@ export class TodoModel {
             if (item.id == event.target.parentElement.id) {
                 this.todoList.splice(index, 1);
                 this.storageService.setItems(this.todoList);
+                this.db.deleteItem(event);
             };
         });
     }
 
     toggleCheck(event) {
         this.todoList.forEach((item, index) => {
+
             if (item.id == event.target.parentNode.parentElement.id) {
                 this.todoList[index].is_checked = !this.todoList[index].is_checked;
+                this.db.toggleItem(event.target.parentNode.parentElement.id, item.is_checked);
             }
         });
         this.storageService.setItems(this.todoList);
@@ -86,6 +88,7 @@ export class TodoModel {
 
     clearCompleted(event) {
         this.todoList = this.todoList.filter((item) => {
+            this.db.clearCompletedItems(event, item.is_checked === true);
             return item.is_checked === false;
         });
         this.storageService.setItems(this.todoList);
@@ -123,16 +126,18 @@ export class TodoModel {
         this.todoList.forEach((item, index) => {
             if (item.id == event.target.parentNode.id) {
                 this.todoList[index].is_editable = !this.todoList[index].is_editable;
+                this.db.editListItem(event.target.parentNode.id, item.is_editable);
             }
         });
         this.storageService.setItems(this.todoList);
     }
 
-    edit() {
+    editedListItem() {
         this.todoList.forEach((item, index) => {
             if (item.id == event.target.parentNode.parentElement.id) {
                 item.text = event.target.value;
                 item.is_editable = false;
+                this.db.editedListItem(event.target.parentNode.parentElement.id, item.text);
             }
         });
         this.storageService.setItems(this.todoList);
@@ -141,6 +146,7 @@ export class TodoModel {
     checkAll() {
         this.todoList.forEach((item, index) => {
             item.is_checked = true;
+            this.db.checkAllItems(item.is_checked);
         });
         this.storageService.setItems(this.todoList);
     }
@@ -148,6 +154,7 @@ export class TodoModel {
     uncheckAll() {
         this.todoList.forEach((item, index) => {
             item.is_checked = false;
+            this.db.uncheckAllItems(item.is_checked);
         });
         this.storageService.setItems(this.todoList);
     }
