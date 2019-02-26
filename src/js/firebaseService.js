@@ -40,6 +40,8 @@ export class Firestore {
     }
 
     updateItem(itemId, is_checkedStatus, is_editableStatus) {
+        console.log('is_editableStatus: ', is_editableStatus);
+        console.log('is_checkedStatus: ', is_checkedStatus);
         return this.firestore.collection('todos').get().then((snapshot) => {
             snapshot.docs.forEach(doc => {
                 if (doc.data().id == itemId) {

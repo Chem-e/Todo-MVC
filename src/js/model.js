@@ -67,10 +67,9 @@ export class TodoModel {
 
     toggleCheck(event) {
         this.todoList.forEach((item, index) => {
-
             if (item.id == event.target.parentNode.parentElement.id) {
                 this.todoList[index].is_checked = !this.todoList[index].is_checked;
-                this.firestore.updateItem(event.target.parentNode.parentElement.id, item.is_checked, item.is_checked);
+                this.firestore.updateItem(event.target.parentNode.parentElement.id, item.is_checked, item.is_editable);
             }
         });
         this.storageService.setItems(this.todoList);
