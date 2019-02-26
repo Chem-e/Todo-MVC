@@ -8,7 +8,9 @@ export class TodoController {
 
     constructor() {
         this.todoModel = new TodoModel();
-        this.reDraw();
+        this.todoModel.firestoreTodolist().then((item) => {
+            this.reDraw();
+        });
         document.getElementById("myInput")
             .addEventListener("keyup", (event) => {
                 event.preventDefault();
@@ -18,6 +20,7 @@ export class TodoController {
                     this.reDraw();
                 };
             });
+
         this.capture = true;
         this.eventHandler = {
             removeEvent: (event) => {
@@ -46,13 +49,13 @@ export class TodoController {
             },
 
             blurEvent: (event) => {
-                this.todoModel.edit(event);
+                this.todoModel.editedListItem(event);
                 this.reDrawList();
             },
 
             enterKeyEvent: (event) => {
                 if (event.keyCode === 13) {
-                    this.todoModel.edit(event);
+                    this.todoModel.editedListItem(event);
                     this.reDrawList();
                 }
             },
@@ -145,5 +148,3 @@ export class TodoController {
     }
     
 };
-
-new TodoController();
