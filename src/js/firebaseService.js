@@ -55,18 +55,6 @@ export class Firestore {
         });
     }
 
-    editListItem(itemId, is_editableStatus) {
-        return this.firestore.collection('todos').get().then((snapshot) => {
-            snapshot.docs.forEach(doc => {
-                if (doc.data().id == itemId) {
-                    this.firestore.collection('todos').doc(doc.id).update({
-                        is_editable: is_editableStatus
-                    });
-                }
-            });
-        });
-    }
-
     editedListItem(itemId, updatedText) {
         return this.firestore.collection('todos').get().then((snapshot) => {
             snapshot.docs.forEach(doc => {
