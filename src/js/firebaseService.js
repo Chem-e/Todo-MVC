@@ -1,25 +1,18 @@
+import { config } from '../js/firebase.config';
+
 let firebase = require('firebase/app');
-// all 3 are optional and you only need to require them at the start
+
 require('firebase/auth');
 require('firebase/database');
 require('firebase/firestore');
 require('firebase/storage');
 
-let config = {
-    apiKey: "AIzaSyAkK601cYbrn0ydUmSVGNmnnBbY39s7sz0",
-    authDomain: "todo-mvc-fa23e.firebaseapp.com",
-    databaseURL: "https://todo-mvc-fa23e.firebaseio.com",
-    projectId: "todo-mvc-fa23e",
-    storageBucket: "todo-mvc-fa23e.appspot.com",
-    messagingSenderId: "360772376337"
-};
 firebase.initializeApp(config);
 
-export class Db {
+export class Firestore {
 
     constructor() {
         this.firestore = firebase.firestore();
-        this.firestore.settings({ timestampsInSnapshots: true });
     }
 
     addItems(item) {
@@ -38,20 +31,24 @@ export class Db {
 
     deleteItem(event) {
         return this.firestore.collection('todos').get().then((snapshot) => {
+            // console.log('snapshot: ', snapshot);
             snapshot.docs.forEach(doc => {
+                console.log('event.target.parentElement.id: uper ', event.target.parentElement.id);
                 if (doc.data().id == event.target.parentElement.id) {
+                    console.log('doc.data().id: nechay ', doc.data().id);
                     this.firestore.collection('todos').doc(doc.id).delete();
                 }
             });
         });
     }
 
-    toggleItem(itemId, is_checkedStatus) {
+    updateItem(itemId, is_checkedStatus, is_editableStatus) {
         return this.firestore.collection('todos').get().then((snapshot) => {
             snapshot.docs.forEach(doc => {
                 if (doc.data().id == itemId) {
                     this.firestore.collection('todos').doc(doc.id).update({
-                        is_checked: is_checkedStatus
+                        is_checked: is_checkedStatus,
+                        is_editable: is_editableStatus
                     });
                 }
             });
@@ -106,7 +103,6 @@ export class Db {
     clearCompletedItems(event, completedItems) {
         return this.firestore.collection('todos').get().then((snapshot) => {
             snapshot.docs.forEach(doc => {
-                console.log('here', doc.data().is_checked);
                 if (doc.data().is_checked == true) {
                     this.firestore.collection('todos').doc(doc.id).delete();
                 }

@@ -1,5 +1,5 @@
 import { StorageService } from './storage';
-import { Db } from './firebaseService';
+import { Firestore } from './firebaseService';
 
 class TodoObject {
 
@@ -25,7 +25,7 @@ export class TodoModel {
 
     constructor() {
         this.storageService = new StorageService();
-        this.db = new Db();
+        this.firestore = new Firestore();
         this.todoList = [];
         this.todoObject = new TodoObject();
 
@@ -34,8 +34,8 @@ export class TodoModel {
         }
     }
 
-    dataBaseData() {
-        return this.db.getItems().then((items) => {
+    firestoreTodolist() {
+        return this.firestore.getItems().then((items) => {
             if (items) {
                 this.todoList = items;
             }
@@ -52,7 +52,7 @@ export class TodoModel {
         let todoObject = new TodoObject(value, id);
         this.todoList.push(todoObject);
         this.storageService.setItems(this.todoList);
-        this.db.addItems(todoObject.todo());
+        this.firestore.addItems(todoObject.todo());
     }
 
     removeTodo(event) {
@@ -60,7 +60,7 @@ export class TodoModel {
             if (item.id == event.target.parentElement.id) {
                 this.todoList.splice(index, 1);
                 this.storageService.setItems(this.todoList);
-                this.db.deleteItem(event);
+                this.firestore.deleteItem(event);
             };
         });
     }
@@ -70,7 +70,7 @@ export class TodoModel {
 
             if (item.id == event.target.parentNode.parentElement.id) {
                 this.todoList[index].is_checked = !this.todoList[index].is_checked;
-                this.db.toggleItem(event.target.parentNode.parentElement.id, item.is_checked);
+                this.firestore.updateItem(event.target.parentNode.parentElement.id, item.is_checked, item.is_checked);
             }
         });
         this.storageService.setItems(this.todoList);
@@ -88,7 +88,7 @@ export class TodoModel {
 
     clearCompleted(event) {
         this.todoList = this.todoList.filter((item) => {
-            this.db.clearCompletedItems(event, item.is_checked === true);
+            this.firestore.clearCompletedItems(event, item.is_checked === true);
             return item.is_checked === false;
         });
         this.storageService.setItems(this.todoList);
@@ -126,7 +126,7 @@ export class TodoModel {
         this.todoList.forEach((item, index) => {
             if (item.id == event.target.parentNode.id) {
                 this.todoList[index].is_editable = !this.todoList[index].is_editable;
-                this.db.editListItem(event.target.parentNode.id, item.is_editable);
+                this.firestore.updateItem(event.target.parentNode.id, item.is_checked, item.is_editable);
             }
         });
         this.storageService.setItems(this.todoList);
@@ -137,7 +137,7 @@ export class TodoModel {
             if (item.id == event.target.parentNode.parentElement.id) {
                 item.text = event.target.value;
                 item.is_editable = false;
-                this.db.editedListItem(event.target.parentNode.parentElement.id, item.text);
+                this.firestore.editedListItem(event.target.parentNode.parentElement.id, item.text);
             }
         });
         this.storageService.setItems(this.todoList);
@@ -146,7 +146,7 @@ export class TodoModel {
     checkAll() {
         this.todoList.forEach((item, index) => {
             item.is_checked = true;
-            this.db.checkAllItems(item.is_checked);
+            this.firestore.checkAllItems(item.is_checked);
         });
         this.storageService.setItems(this.todoList);
     }
@@ -154,7 +154,7 @@ export class TodoModel {
     uncheckAll() {
         this.todoList.forEach((item, index) => {
             item.is_checked = false;
-            this.db.uncheckAllItems(item.is_checked);
+            this.firestore.uncheckAllItems(item.is_checked);
         });
         this.storageService.setItems(this.todoList);
     }

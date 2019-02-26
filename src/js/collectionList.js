@@ -8,7 +8,7 @@ export class TodoController {
 
     constructor() {
         this.todoModel = new TodoModel();
-        this.todoModel.dataBaseData().then((item) => {
+        this.todoModel.firestoreTodolist().then((item) => {
             this.reDraw();
         });
         document.getElementById("myInput")
@@ -49,13 +49,13 @@ export class TodoController {
             },
 
             blurEvent: (event) => {
-                this.todoModel.edit(event);
+                this.todoModel.editedListItem(event);
                 this.reDrawList();
             },
 
             enterKeyEvent: (event) => {
                 if (event.keyCode === 13) {
-                    this.todoModel.edit(event);
+                    this.todoModel.editedListItem(event);
                     this.reDrawList();
                 }
             },
