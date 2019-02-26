@@ -1,11 +1,11 @@
 import { config } from '../js/firebase.config';
 
-let firebase = require('firebase/app');
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/database';
+import 'firebase/firestore';
+import 'firebase/storage';
 
-require('firebase/auth');
-require('firebase/database');
-require('firebase/firestore');
-require('firebase/storage');
 
 firebase.initializeApp(config);
 
@@ -31,11 +31,8 @@ export class Firestore {
 
     deleteItem(event) {
         return this.firestore.collection('todos').get().then((snapshot) => {
-            // console.log('snapshot: ', snapshot);
             snapshot.docs.forEach(doc => {
-                console.log('event.target.parentElement.id: uper ', event.target.parentElement.id);
                 if (doc.data().id == event.target.parentElement.id) {
-                    console.log('doc.data().id: nechay ', doc.data().id);
                     this.firestore.collection('todos').doc(doc.id).delete();
                 }
             });
