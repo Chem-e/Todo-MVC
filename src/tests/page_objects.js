@@ -10,11 +10,11 @@ module.exports = TodoMVCTests = {
     },
 
     sleep: function() {
-        return browser.sleep(2000);
+        return browser.sleep(5000);
     },
 
     inputSendKeys: function() {
-        return element(by.id('myInput')).sendKeys('value', protractor.Key.ENTER);;
+        return element(by.id('myInput')).sendKeys('value', protractor.Key.ENTER);
     },
 
     todos: function() {
@@ -38,14 +38,24 @@ module.exports = TodoMVCTests = {
     },
 
     editLi: function() {
-        return element(by.css('.editableInput'));
+        return element(by.id('editableInput'));
     },
 
     editLiSendKeys: function() {
         return this.editLi().sendKeys('value', protractor.Key.ENTER);;
     },
+
     crossIcon: function() {
-        return element(by.id('close'));
+        return element.all(by.id('close'));
+    },
+
+    erase: function() {
+        let list = this.crossIcon();
+        list.then((items) => {
+            for (let i = items.length - 1; i >= 0; i--) {
+                list.get(i).click();
+            };
+        });
     },
 
     filter: function() {
