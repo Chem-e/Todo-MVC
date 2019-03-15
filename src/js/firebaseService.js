@@ -39,15 +39,15 @@ export class Firestore {
         });
     }
 
-    updateItem(itemId, is_checkedStatus, is_editableStatus) {
-        console.log('is_editableStatus: ', is_editableStatus);
-        console.log('is_checkedStatus: ', is_checkedStatus);
+    updateItem(itemId, is_checkedStatus, is_editableStatus, tagEnabledStatus, dueDateEnabledStatus) {
         return this.firestore.collection('todos').get().then((snapshot) => {
             snapshot.docs.forEach(doc => {
                 if (doc.data().id == itemId) {
                     this.firestore.collection('todos').doc(doc.id).update({
                         is_checked: is_checkedStatus,
-                        is_editable: is_editableStatus
+                        is_editable: is_editableStatus,
+                        tagEnabled: tagEnabledStatus,
+                        dueDateEnabled: dueDateEnabledStatus
                     });
                 }
             });
@@ -92,6 +92,32 @@ export class Firestore {
             snapshot.docs.forEach(doc => {
                 if (doc.data().is_checked == true) {
                     this.firestore.collection('todos').doc(doc.id).delete();
+                }
+            });
+        });
+    }
+
+    addTag(itemId, updatedText) {
+        return this.firestore.collection('todos').get().then((snapshot) => {
+            snapshot.docs.forEach(doc => {
+                if (doc.data().id == itemId) {
+                    this.firestore.collection('todos').doc(doc.id).update({
+                        tagName: updatedText,
+                        tagEnabled: false
+                    });
+                }
+            });
+        });
+    }
+
+    addDueDate(itemId, updatedText) {
+        return this.firestore.collection('todos').get().then((snapshot) => {
+            snapshot.docs.forEach(doc => {
+                if (doc.data().id == itemId) {
+                    this.firestore.collection('todos').doc(doc.id).update({
+                        dueDate: updatedText,
+                        dueDateEnabled: false
+                    });
                 }
             });
         });

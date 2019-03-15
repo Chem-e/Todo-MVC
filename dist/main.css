@@ -10,28 +10,52 @@
     background: #f7f7f7;
 }
 
+.background-light-blue {
+    background: #c8d8e7;
+}
+
+.color-6c757d-grey {
+    color: #6c757d;
+}
+
 .color-grey {
     color: #c0c0c0;
 }
 
 .color-dark-grey {
-    color: #786b65;
+    color: #786b65 !important;
 }
 
 .color-light-grey {
     color: #9b9b9b;
 }
 
-.font-size-30 {
-    font-size: 30px;
+.color-white {
+    color: white;
 }
 
-.font-size-120 {
-    font-size: 120px;
+.color-black {
+    color: black !important;
+}
+
+.font-size-15 {
+    font-size: 15px;
+}
+
+.font-size-25 {
+    font-size: 25px;
+}
+
+.font-size-80 {
+    font-size: 80px;
+}
+
+.font-size-20 {
+    font-size: 20px;
 }
 
 .text-styles {
-    text-shadow: 9px 8px #abb5bd;
+    text-shadow: 7px 6px #abb5bd;
     -webkit-text-stroke: 3px #6c757d;
 }
 
@@ -43,7 +67,7 @@
     border-right: 3px solid #efd2d3;
 }
 
-.editText {
+.edit-text {
     word-wrap: break-word;
     border-left: 3px solid #efd2d3;
     width: 85%
@@ -56,17 +80,27 @@
 }
 
 .todo-card {
-    width: 45rem;
-    border-top: 20px solid #786962;
+    width: 35rem;
+    border-top: 12px solid #786962;
+}
+
+.tag-card {
+    min-height: 10rem;
+    width: 14rem;
+    background: rgba(254, 254, 255, 1);
+    border-top: 7px solid #abb5bd;
+    border-bottom: 5px solid #d0cece !important;
+    border-right: 5px solid #abb5bd !important;
+    border-left: 5px solid #f2f2f2 !important;
 }
 
 .input {
     border: none;
-    height: 70px;
+    height: 30px;
 }
 
-.editableInput {
-    height: 50px;
+.editable-input {
+    height: 30px;
     background-color: white;
 }
 
@@ -75,11 +109,16 @@
 }
 
 .footer {
-    width: 44rem;
+    width: 34rem;
     background: rgba(171, 181, 189, 0.45);
-    border-bottom: 5px solid #abb5bd !important;
-    border-right: 5px solid #abb5bd !important;
-    border-left: 5px solid #abb5bd !important;
+    border-bottom: 3px solid #abb5bd !important;
+    border-right: 3px solid #abb5bd !important;
+    border-left: 3px solid #abb5bd !important;
+}
+
+.tag-name {
+    display: inline;
+    margin: 0px !important;
 }
 
 .btn-group>.tabs:focus {
@@ -98,24 +137,32 @@
 
 input[id="myInput"]::-webkit-input-placeholder {
     color: #c0c0c0;
-    font-size: 30px;
+    font-size: 25px;
 }
 
 input[id="myInput"]::-moz-placeholder {
     color: #c0c0c0;
-    font-size: 30px;
+    font-size: 25px;
 }
 
 input[id="myInput"]:-ms-input-placeholder {
     color: #c0c0c0;
-    font-size: 30px;
+    font-size: 25px;
 }
 
 input[id="myInput"]:-moz-placeholder {
     color: #c0c0c0;
-    font-size: 30px;
+    font-size: 25px;
 }
 
 input:focus {
     outline: none;
+}
+
+.tag-input {
+    border: 1px solid #c3c8cb;
+}
+
+.border-radius-100 {
+    border-radius: 100px;
 }

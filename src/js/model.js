@@ -3,11 +3,15 @@ import { Firestore } from './firebaseService';
 
 class TodoObject {
 
-    constructor(value, id) {
+    constructor(value, id, tagName, dueDate) {
         this.id = id;
         this.text = value;
         this.is_checked = false;
         this.is_editable = false;
+        this.tagEnabled = false;
+        this.tagName = tagName;
+        this.dueDateEnabled = false;
+        this.dueDate = dueDate;
     }
 
     todo() {
@@ -15,7 +19,11 @@ class TodoObject {
             id: this.id,
             text: this.text,
             is_checked: this.is_checked,
-            is_editable: this.is_editable
+            is_editable: this.is_editable,
+            tagName: this.tagName,
+            tagEnabled: this.tagEnabled,
+            dueDateEnabled: this.dueDateEnabled,
+            dueDate: this.dueDate
         };
     }
 
@@ -49,7 +57,9 @@ export class TodoModel {
 
     addTodo(value) {
         let id = this.guidGenerator();
-        let todoObject = new TodoObject(value, id);
+        let tagName = '';
+        let dueDate = '';
+        let todoObject = new TodoObject(value, id, tagName, dueDate);
         this.todoList.push(todoObject);
         this.storageService.setItems(this.todoList);
         this.firestore.addItems(todoObject.todo());
@@ -69,7 +79,7 @@ export class TodoModel {
         this.todoList.forEach((item, index) => {
             if (item.id == event.target.parentNode.parentElement.id) {
                 this.todoList[index].is_checked = !this.todoList[index].is_checked;
-                this.firestore.updateItem(event.target.parentNode.parentElement.id, item.is_checked, item.is_editable);
+                this.firestore.updateItem(event.target.parentNode.parentElement.id, item.is_checked, item.is_editable, item.tagEnabled, item.dueDateEnabled);
             }
         });
         this.storageService.setItems(this.todoList);
@@ -125,7 +135,7 @@ export class TodoModel {
         this.todoList.forEach((item, index) => {
             if (item.id == event.target.parentNode.id) {
                 this.todoList[index].is_editable = !this.todoList[index].is_editable;
-                this.firestore.updateItem(event.target.parentNode.id, item.is_checked, item.is_editable);
+                this.firestore.updateItem(event.target.parentNode.parentElement.id, item.is_checked, item.is_editable, item.tagEnabled);
             }
         });
         this.storageService.setItems(this.todoList);
@@ -154,6 +164,60 @@ export class TodoModel {
         this.todoList.forEach((item, index) => {
             item.is_checked = false;
             this.firestore.uncheckAllItems(item.is_checked);
+        });
+        this.storageService.setItems(this.todoList);
+    }
+
+    enableTag(event) {
+        this.todoList.forEach((item, index) => {
+            if (item.id == event.target.parentElement.id) {
+                item.tagEnabled = true;
+                this.firestore.updateItem(event.target.parentElement.id, item.is_checked, item.is_editable, item.tagEnabled, item.dueDateEnabled);
+            };
+        });
+        this.storageService.setItems(this.todoList);
+    }
+
+    addTag() {
+        this.todoList.forEach((item, index) => {
+            if (item.id == event.target.parentNode.parentElement.id) {
+                item.tagName = event.target.value;
+                item.tagEnabled = false;
+                this.firestore.addTag(event.target.parentNode.parentElement.id, item.tagName);
+            }
+        });
+        this.storageService.setItems(this.todoList);
+    }
+
+    displayTags() {
+        return [...new Set(this.todoList.map(item => item.tagName))];
+        this.storageService.setItems(this.todoList);
+    }
+
+    filterTags(event) {
+        return this.todoList.filter((item) => {
+            return event.target.text === item.tagName;
+        });
+        this.storageService.setItems(this.todoList);
+    }
+
+    enableDueDate(event) {
+        this.todoList.forEach((item, index) => {
+            if (item.id == event.target.parentElement.id) {
+                item.dueDateEnabled = true;
+                this.firestore.updateItem(event.target.parentElement.id, item.is_checked, item.is_editable, item.tagEnabled, item.dueDateEnabled);
+            };
+        });
+        this.storageService.setItems(this.todoList);
+    }
+
+    addDueDate() {
+        this.todoList.forEach((item, index) => {
+            if (item.id == event.target.parentNode.parentElement.id) {
+                item.dueDate = event.target.value;
+                item.dueDateEnabled = false;
+                this.firestore.addDueDate(event.target.parentNode.parentElement.id, item.dueDate);
+            }
         });
         this.storageService.setItems(this.todoList);
     }

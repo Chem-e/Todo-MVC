@@ -1,4 +1,4 @@
-module.exports = TodoMVCTests = {
+module.exports = TodoMVCPageObjects = {
 
     get: function() {
         browser.ignoreSynchronization = true; //disable angular
@@ -13,44 +13,36 @@ module.exports = TodoMVCTests = {
         return browser.sleep(5000);
     },
 
-    inputSendKeys: function() {
-        return element(by.id('myInput')).sendKeys('value', protractor.Key.ENTER);
+    getElementById: function(id) {
+        return element(by.id(id));
     },
 
-    todos: function() {
-        return element.all(by.css('.li'));
+    sendKey: function(element, value) {
+        return element.sendKeys(value, protractor.Key.ENTER)
     },
 
-    lastTodoItem: function() {
-        return this.todos().last();
+    getAllElements: function(selector) {
+        return element.all(by.css(selector));
     },
 
-    lastTodoItemIsPresent: function() {
-        return this.lastTodoItem().isPresent();
+    lastTodoItem: function(list) {
+        return list.last();
     },
 
-    getTextOfLastTodoItem: function() {
-        return this.lastTodoItem().getText();
+    checkIfPresent: function(item) {
+        return item.isPresent();
     },
 
-    doubleclick: function() {
-        return browser.actions().doubleClick(this.lastTodoItem()).perform();
+    getTextOfItem: function(item) {
+        return item.getText();
     },
 
-    editLi: function() {
-        return element(by.id('editableInput'));
-    },
-
-    editLiSendKeys: function() {
-        return this.editLi().sendKeys('value', protractor.Key.ENTER);;
-    },
-
-    crossIcon: function() {
-        return element.all(by.id('close'));
+    doubleClickAction: function(listItem) {
+        return browser.actions().mouseMove(listItem).mouseMove({ x: 50, y: 0 }).doubleClick().perform();
     },
 
     erase: function() {
-        let list = this.crossIcon();
+        let list = element.all(by.id('close'));
         list.then((items) => {
             for (let i = items.length - 1; i >= 0; i--) {
                 list.get(i).click();
@@ -64,24 +56,39 @@ module.exports = TodoMVCTests = {
         }).first().click();
     },
 
-    listItems: function() {
-        return element.all(by.css('.ul li'));
+    count: function(elements) {
+        return elements.count();
     },
 
-    count: function() {
-        return this.listItems().count();
+    tag: function() {
+        return element(by.id('tag'));
     },
 
-    all: function() {
-        return element(by.id('all'));
+    tagInput: function() {
+        return element(by.id('tagInput'));
     },
 
-    active: function() {
-        return element(by.id('active'));
+    tagInputSendKeys: function() {
+        return element(by.id('tagInput')).sendKeys('shopping', protractor.Key.ENTER);
     },
 
-    completed: function() {
-        return element(by.id('completed'));
+    editTag: function() {
+        // return element(by.id('editableInput'));
+    },
+
+    editTagSendKeys: function() {
+        return this.editTag().sendKeys('cleaning', protractor.Key.ENTER);
+    },
+
+    tags: function() {
+        return element.all(by.css('.li'));
+    },
+    lastTodoTag: function() {
+        return this.tags().last();
+    },
+
+    lastTodoTagIsPresent: function() {
+        return this.lastTodoTag().isPresent();
     }
 
 };

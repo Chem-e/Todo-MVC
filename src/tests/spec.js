@@ -1,72 +1,161 @@
-var todoMVCTests = require('./page_objects');
+var todoMVCPageObjects = require('./page_objects');
 
-// describe('Todo App', function() {
-//     it('should have a title', function() {
-//         todoMVCTests.get();
-//         expect(TodoMVCTests.getAppTitle()).toEqual('Todo MVC');
-//     });
-// });
+describe('Todo App', function() {
+    it('should have a title', function() {
+        todoMVCPageObjects.get();
+        expect(TodoMVCPageObjects.getAppTitle()).toEqual('Todo MVC');
+    });
+});
 
-// describe('Todo App', function() {
-//     it('should add a list element', function() {
-//         todoMVCTests.get();
-//         todoMVCTests.inputSendKeys();
-//         todoMVCTests.sleep();
-//         expect(TodoMVCTests.getTextOfLastTodoItem()).toContain('value');
-//     });
-// });
+describe('Todo App', function() {
+    it('should add a list element', function() {
+        todoMVCPageObjects.get();
+        todoMVCPageObjects.sleep();
 
-// describe('Todo App', function() {
-//     it('should edit li', function() {
-//         todoMVCTests.get();
-//         todoMVCTests.inputSendKeys();
-//         expect(TodoMVCTests.getTextOfLastTodoItem()).toContain('value');
-//         TodoMVCTests.doubleclick();
-//         todoMVCTests.sleep();
-//         expect(todoMVCTests.editLi().isPresent()).toBe(true);
-//         todoMVCTests.sleep();
-//         todoMVCTests.editLiSendKeys();
-//         todoMVCTests.sleep();
-//         expect(todoMVCTests.lastTodoItemIsPresent()).toBe(true);
-//     });
-// });
+        todoMVCPageObjects.erase();
+        todoMVCPageObjects.sleep();
 
-// describe('Todo App', function() {
-//     it('should remove li', function() {
-//         todoMVCTests.get();
-//         todoMVCTests.inputSendKeys();
-//         expect(TodoMVCTests.getTextOfLastTodoItem()).toContain('value');
-//         todoMVCTests.sleep();
-//         todoMVCTests.erase();
-//         todoMVCTests.sleep();
-//         todoMVCTests.sleep();
-//         todoMVCTests.sleep();
-//         expect(todoMVCTests.lastTodoItemIsPresent()).toBe(false);
-//     });
-// });
+        let element = todoMVCPageObjects.getElementById('myInput');
+        todoMVCPageObjects.sendKey(element, 'test');
+
+        let listItems = todoMVCPageObjects.getAllElements('li');
+        todoMVCPageObjects.sleep();
+        let lastListItem = todoMVCPageObjects.lastTodoItem(listItems);
+
+        todoMVCPageObjects.sleep();
+        expect(TodoMVCPageObjects.getTextOfItem(lastListItem)).toContain('test');
+    });
+});
+
+describe('Todo App', function() {
+    it('should edit li', function() {
+        todoMVCPageObjects.get();
+        todoMVCPageObjects.sleep();
+        todoMVCPageObjects.erase();
+        todoMVCPageObjects.sleep();
+
+        let element = todoMVCPageObjects.getElementById('myInput');
+        todoMVCPageObjects.sendKey(element, 'test');
+        todoMVCPageObjects.sleep();
+
+        let listItems = todoMVCPageObjects.getAllElements('li');
+        let lastListItem = todoMVCPageObjects.lastTodoItem(listItems);
+        expect(TodoMVCPageObjects.getTextOfItem(lastListItem)).toContain('test');
+
+        TodoMVCPageObjects.doubleClickAction(lastListItem);
+        todoMVCPageObjects.sleep();
+
+        let editListItem = todoMVCPageObjects.getElementById('listEditableInput');
+
+        expect(editListItem.isPresent()).toBe(true);
+
+        todoMVCPageObjects.sendKey(editListItem, 'edited');
+
+        expect(TodoMVCPageObjects.getTextOfItem(lastListItem)).toContain('edited');
+    });
+});
+
+describe('Todo App', function() {
+    it('should remove li', function() {
+        todoMVCPageObjects.get();
+        let element = todoMVCPageObjects.getElementById('myInput');
+        todoMVCPageObjects.sendKey(element, 'test');
+        todoMVCPageObjects.sleep();
+        let listItems = todoMVCPageObjects.getAllElements('li');
+        let lastListItem = todoMVCPageObjects.lastTodoItem(listItems);
+        expect(TodoMVCPageObjects.getTextOfItem(lastListItem)).toContain('test');
+        todoMVCPageObjects.sleep();
+        todoMVCPageObjects.erase();
+        todoMVCPageObjects.sleep();
+        expect(todoMVCPageObjects.checkIfPresent(lastListItem)).toBe(false);
+    });
+});
 
 describe('Todo App', function() {
     it('should filter list items', function() {
-        todoMVCTests.get();
-        todoMVCTests.sleep();
-        todoMVCTests.erase();
-        todoMVCTests.sleep();
-        todoMVCTests.inputSendKeys();
-        todoMVCTests.inputSendKeys();
-        todoMVCTests.inputSendKeys();
-        expect(TodoMVCTests.getTextOfLastTodoItem()).toContain('value');
+        todoMVCPageObjects.get();
+        todoMVCPageObjects.sleep();
+        todoMVCPageObjects.erase();
+        todoMVCPageObjects.sleep();
 
-        todoMVCTests.filter();
-        todoMVCTests.listItems();
+        let element = todoMVCPageObjects.getElementById('myInput');
+        todoMVCPageObjects.sendKey(element, 'test');
+        todoMVCPageObjects.sendKey(element, 'test');
+        todoMVCPageObjects.sendKey(element, 'test');
 
-        todoMVCTests.all().click();
-        expect(todoMVCTests.count()).toBe(3);
+        todoMVCPageObjects.filter();
+        let elements = todoMVCPageObjects.getAllElements('.ul li');
 
-        todoMVCTests.active().click();
-        expect(todoMVCTests.count()).toBe(2);
+        todoMVCPageObjects.getElementById('all').click();
+        expect(todoMVCPageObjects.count(elements)).toBe(3);
 
-        todoMVCTests.completed().click();
-        expect(todoMVCTests.count()).toBe(1);
+        todoMVCPageObjects.getElementById('active').click();
+        expect(todoMVCPageObjects.count(elements)).toBe(2);
 
+        todoMVCPageObjects.getElementById('completed').click();
+        expect(todoMVCPageObjects.count(elements)).toBe(1);
+    });
+});
+
+
+describe('Todo App', function() {
+    it('should add a tag', function() {
+        todoMVCPageObjects.get();
+        todoMVCPageObjects.sleep();
+
+        todoMVCPageObjects.erase();
+        todoMVCPageObjects.sleep();
+        let element = todoMVCPageObjects.getElementById('myInput');
+        todoMVCPageObjects.sendKey(element, 'test');
+        todoMVCPageObjects.getElementById('tag').click();
+
+        let tagAdded = todoMVCPageObjects.getElementById('tagInput');
+        expect(TodoMVCPageObjects.checkIfPresent(tagAdded)).toBe(true);
+        todoMVCPageObjects.sendKey(tagAdded, 'tag');
+
+        let tagName = todoMVCPageObjects.getElementById('tagName');
+        expect(TodoMVCPageObjects.getTextOfItem(tagName)).toContain('tag');
+    });
+});
+
+
+describe('Todo App', function() {
+    it('should enable due date input', function() {
+        todoMVCPageObjects.get();
+        todoMVCPageObjects.sleep();
+
+        todoMVCPageObjects.erase();
+        let element = todoMVCPageObjects.getElementById('myInput');
+        todoMVCPageObjects.sendKey(element, 'test');
+        todoMVCPageObjects.getElementById('dueDateIcon').click();
+        let dueDateAdded = todoMVCPageObjects.getElementById('dueDateInput');
+        todoMVCPageObjects.sleep();
+        expect(TodoMVCPageObjects.checkIfPresent(dueDateAdded)).toBe(true);
+
+        todoMVCPageObjects.sendKey(dueDateAdded, '11/22/2019');
+        todoMVCPageObjects.sleep();
+        let dueDate = todoMVCPageObjects.getElementById('dueDate');
+        expect(TodoMVCPageObjects.getTextOfItem(dueDate)).toContain('2019-11-22');
+
+    });
+});
+
+
+describe('Todo App', function() {
+    it('should add a due date', function() {
+        todoMVCPageObjects.get();
+        // todoMVCPageObjects.sleep();
+        todoMVCPageObjects.sleep();
+        let dueDateAdded = todoMVCPageObjects.getElementById('dueDateInput');
+        todoMVCPageObjects.mouseMoveClick(dueDateAdded, 591, 267);
+        todoMVCPageObjects.sleep();
+        todoMVCPageObjects.mouseMoveClick(dueDateAdded, 376, 267);
+        // todoMVCPageObjects.sleep();
+        todoMVCPageObjects.mouseMoveClick(dueDateAdded, 591, 267);
+        todoMVCPageObjects.sleep();
+        todoMVCPageObjects.mouseMoveClick(dueDateAdded, 476, 267);
+        // todoMVCPageObjects.sleep();
+        todoMVCPageObjects.mouseMoveClick(dueDateAdded, 591, 267);
+        todoMVCPageObjects.sleep();
     });
 });
