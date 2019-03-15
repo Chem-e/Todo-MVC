@@ -120,7 +120,7 @@ describe('Todo App', function() {
 
 
 describe('Todo App', function() {
-    it('should enable due date input', function() {
+    it('should add a due date input', function() {
         todoMVCPageObjects.get();
         todoMVCPageObjects.sleep();
 
@@ -137,25 +137,5 @@ describe('Todo App', function() {
         let dueDate = todoMVCPageObjects.getElementById('dueDate');
         expect(TodoMVCPageObjects.getTextOfItem(dueDate)).toContain('2019-11-22');
 
-    });
-});
-
-
-describe('Todo App', function() {
-    it('should add a due date', function() {
-        todoMVCPageObjects.get();
-        // todoMVCPageObjects.sleep();
-        todoMVCPageObjects.sleep();
-        let dueDateAdded = todoMVCPageObjects.getElementById('dueDateInput');
-        todoMVCPageObjects.mouseMoveClick(dueDateAdded, 591, 267);
-        todoMVCPageObjects.sleep();
-        todoMVCPageObjects.mouseMoveClick(dueDateAdded, 376, 267);
-        // todoMVCPageObjects.sleep();
-        todoMVCPageObjects.mouseMoveClick(dueDateAdded, 591, 267);
-        todoMVCPageObjects.sleep();
-        todoMVCPageObjects.mouseMoveClick(dueDateAdded, 476, 267);
-        // todoMVCPageObjects.sleep();
-        todoMVCPageObjects.mouseMoveClick(dueDateAdded, 591, 267);
-        todoMVCPageObjects.sleep();
     });
 });
